@@ -1,6 +1,6 @@
 # AlejandrIA - Asistente de Investigación Universitaria
 
-![AlejandrIA - Asistente de Investigación](https://i.ibb.co/your-image-here/alejandria-preview.png)
+![AlejandrIA - Asistente de Investigación]([https://i.ibb.co/your-image-here/alejandria-preview.png](https://ibb.co/JRVrX7JM))
 
 ## Descripción
 
