@@ -168,30 +168,6 @@ El sistema utiliza n8n como backend de IA.
 - **Convenciones BEM** para CSS
 - **Semantic versioning** para releases
 
-## API Reference
-
-### Endpoint Principal
-```javascript
-POST /api/alejandria
-Content-Type: application/json
-
-{
-  "message": "string",
-  "context": "array",
-  "sessionId": "string",
-  "timestamp": "ISO string"
-}
-```
-
-### Respuesta
-```javascript
-{
-  "response": "string",
-  "sessionId": "string",
-  "timestamp": "ISO string"
-}
-```
-
 ## Soporte
 
 Para soporte técnico o consultas sobre investigación:
