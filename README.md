@@ -115,17 +115,7 @@ alejandria/
 
 ## Configuración de n8n
 
-El sistema utiliza n8n como backend de IA. Configuración requerida:
-
-```javascript
-// Prompt estructurado para investigación universitaria
-const systemPrompt = `Eres AlejandrIA, un asistente inteligente especializado en ayudar a investigadores universitarios. 
-Tu objetivo es:
-1. Ayudar a encontrar otros investigadores en áreas específicas
-2. Recomendar artículos de investigación relevantes
-3. Conectar personas con intereses de investigación similares
-4. Proporcionar información sobre proyectos de investigación`;
-```
+El sistema utiliza n8n como backend de IA. 
 
 ## Funcionalidades Avanzadas
 
@@ -241,4 +231,4 @@ ConvergenceLab es un laboratorio de innovación académica dedicado a acelerar e
 
 ---
 
-Desarrollado con 🧠 por ConvergenceLab - Transformando la investigación universitaria a través de la IA conversacional
+Desarrollado con ❤️  Transformando la investigación universitaria a través de la IA conversacional
