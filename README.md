@@ -1,6 +1,6 @@
 # AlejandrIA - Asistente de Investigación Universitaria
 
-![AlejandrIA - Asistente de Investigación]([https://github.com/JohnRojas06289/ConvergenceLab/blob/main/assets/AlejandrIA.jpg))
+![AlejandrIA - Asistente de Investigación]([https://i.ibb.co/your-image-here/alejandria-preview.png](https://i.ibb.co/jvmwnqnf/Screenshot-2025-02-12-194345.png](https://github.com/JohnRojas06289/ConvergenceLab/blob/main/assets/AlejandrIA.jpg))
 
 ## Descripción
 
