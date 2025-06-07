@@ -8,16 +8,157 @@
     .feature-card {
         padding: 1.5rem;
     }
+    
+    .feature-card i {
+        font-size: 2.2rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    .feature-card p {
+        font-size: 0.9rem;
+    }
 }
 
+/* MÓVIL - Cards en columna vertical MUY COMPACTAS */
 @media screen and (max-width: 767px) {
+    .welcome-content h2 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-content > p {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
     .feature-grid {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
     }
     
     .feature-card {
-        padding: 1.25rem;
+        padding: 0.75rem;
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 0.5rem;
+    }
+    
+    .feature-card i {
+        font-size: 1.2rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 0.9rem;
+        margin-bottom: 0.25rem;
+        line-height: 1.2;
+        font-weight: 600;
+    }
+    
+    .feature-card p {
+        font-size: 0.7rem;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin: 0;
+    }
+    
+    /* Quick actions en móvil - horizontal y MUY compactos */
+    .quick-actions {
+        flex-direction: row;
+        justify-content: center;
+        gap: 0.25rem;
+        flex-wrap: wrap;
+        margin-top: 0;
+    }
+    
+    .quick-action-btn {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.7rem;
+        border-radius: 1rem;
+        flex: 0 0 auto;
+        min-width: auto;
+        border-width: 1px;
+    }
+    
+    .quick-action-btn i {
+        font-size: 0.7rem;
+    }
+    
+    /* Reducir padding general en móvil */
+    .chat-welcome {
+        padding: 1rem;
+        min-height: auto;
+    }
+    
+    .welcome-content {
+        max-width: 100%;
+    }
+}
+
+/* MÓVIL PEQUEÑO - Aún más compacto */
+@media screen and (max-width: 480px) {
+    .welcome-content h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .welcome-content > p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-grid {
+        gap: 0.4rem;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-card {
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+    }
+    
+    .feature-card i {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .feature-card h3 {
+        font-size: 0.8rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    .feature-card p {
+        font-size: 0.65rem;
+        line-height: 1.1;
+    }
+    
+    .quick-actions {
+        gap: 0.2rem;
+    }
+    
+    .quick-action-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.65rem;
+        border-radius: 0.8rem;
+    }
+    
+    .quick-action-btn i {
+        font-size: 0.65rem;
+    }
+    
+    .chat-welcome {
+        padding: 0.75rem;
+        overflow-y: auto;
+        max-height: 100vh;
     }
 }/* Reset and Base Styles */
 * {
@@ -289,6 +430,7 @@ body {
     color: var(--text-secondary);
     font-size: 0.95rem;
     font-weight: 400;
+    line-height: 1.5;
 }
 
 .quick-actions {
@@ -311,6 +453,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: inherit;
+    white-space: nowrap;
 }
 
 .quick-action-btn:hover {
@@ -393,6 +536,7 @@ body {
     margin-top: 0.75rem;
     padding-top: 0.75rem;
     border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
 }
 
 .message.assistant .message-voice-controls {
@@ -411,11 +555,14 @@ body {
     align-items: center;
     gap: 0.375rem;
     transition: all 0.2s ease;
+    min-height: 28px;
+    white-space: nowrap;
 }
 
 .voice-control-btn:hover {
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
+    transform: translateY(-1px);
 }
 
 .voice-control-btn.playing {
@@ -424,8 +571,37 @@ body {
     border-color: var(--accent-primary);
 }
 
+.voice-control-btn:active {
+    transform: translateY(0);
+}
+
 .voice-control-btn i {
     font-size: 0.75rem;
+}
+
+/* Estados específicos de botones */
+.voice-play-btn:hover {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.voice-pause-btn:hover {
+    background-color: #f59e0b;
+    color: white;
+    border-color: #f59e0b;
+}
+
+.voice-resume-btn:hover {
+    background-color: #10b981;
+    color: white;
+    border-color: #10b981;
+}
+
+.voice-stop-btn:hover {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
 }
 
 .message-time {
