@@ -6,10 +6,165 @@
     <title>AlejandrIA - Asistente de Investigación</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/enhancements.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Estilos adicionales para notificaciones y mejoras UI -->
+    <style>
+        /* Notification styles */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .notification {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: 280px;
+            max-width: 400px;
+            transform: translateX(420px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        .notification-show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .notification-success {
+            border-left: 4px solid #10b981;
+        }
+        
+        .notification-success i {
+            color: #10b981;
+        }
+        
+        .notification-error {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification-error i {
+            color: #ef4444;
+        }
+        
+        .notification-warning {
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .notification-warning i {
+            color: #f59e0b;
+        }
+        
+        .notification-info {
+            border-left: 4px solid var(--accent-primary);
+        }
+        
+        .notification-info i {
+            color: var(--accent-primary);
+        }
+
+        /* Enhanced voice indicator styles */
+        .voice-indicator {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            padding: 1.5rem 2.5rem;
+            border-radius: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 2px solid var(--accent-primary);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .voice-indicator::before {
+            content: '🎤';
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+            animation: microphonePulse 2s ease-in-out infinite;
+        }
+
+        .voice-indicator::after {
+            content: 'Escuchando...';
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-left: 0.5rem;
+            font-weight: 500;
+        }
+
+        @keyframes microphonePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Message avatars with icons */
+        .message-avatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .message-avatar i {
+            font-size: 0.9rem;
+        }
+
+        /* Enhanced input focus states */
+        .message-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+            transform: scale(1.01);
+        }
+
+        /* Smooth transitions for theme switching */
+        * {
+            transition: background-color 0.3s ease, 
+                       color 0.3s ease, 
+                       border-color 0.3s ease;
+        }
+        
+        /* Improved button hover effects */
+        .btn-icon:active {
+            transform: scale(0.95);
+        }
+        
+        /* Loading animation for typing indicator */
+        .typing-indicator .dots::after {
+            animation: typingDots 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes typingDots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -23,12 +178,12 @@
                         <path d="M20 20 L25 25 L20 30 L15 25 Z" fill="url(#gradient2)"/>
                         <defs>
                             <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
                             </linearGradient>
                             <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
-                                <stop offset="100%" style="stop-color:#ec4899;stop-opacity:1" />
+                                <stop offset="0%" style="stop-color:#1d4ed8;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
                             </linearGradient>
                         </defs>
                     </svg>
@@ -90,11 +245,6 @@
         <!-- Input Area -->
         <footer class="chat-input-container">
             <div class="input-wrapper">
-                <div class="voice-indicator" id="voiceIndicator" style="display: none;">
-                    <div class="voice-wave"></div>
-                    <div class="voice-wave"></div>
-                    <div class="voice-wave"></div>
-                </div>
                 <textarea 
                     id="messageInput" 
                     class="message-input" 
@@ -112,7 +262,7 @@
             </div>
             <div class="input-info">
                 <span class="typing-indicator" id="typingIndicator" style="display: none;">
-                    AlejandrIA está escribiendo<span class="dots">...</span>
+                    AlejandrIA está escribiendo<span class="dots"></span>
                 </span>
             </div>
         </footer>
@@ -122,37 +272,88 @@
     <div class="modal" id="settingsModal" style="display: none;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Configuración</h3>
+                <h3><i class="fas fa-cog"></i> Configuración</h3>
                 <button class="btn-icon" id="closeSettings">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-body">
                 <div class="setting-group">
-                    <label for="voiceSpeed">Velocidad de voz</label>
+                    <label for="voiceSpeed">
+                        <i class="fas fa-tachometer-alt"></i> Velocidad de voz
+                    </label>
                     <input type="range" id="voiceSpeed" min="0.5" max="2" step="0.1" value="1">
                     <span id="voiceSpeedValue">1.0x</span>
                 </div>
                 <div class="setting-group">
                     <label for="voiceEnabled">
                         <input type="checkbox" id="voiceEnabled" checked>
-                        Respuestas por voz
+                        <i class="fas fa-volume-up"></i> Respuestas por voz
                     </label>
                 </div>
                 <div class="setting-group">
-                    <label for="webhookUrl">URL del Webhook (n8n)</label>
-                    <input type="text" id="webhookUrl" placeholder="https://your-n8n-instance.com/webhook/..." value="">
+                    <button class="btn-primary" id="clearChat">
+                        <i class="fas fa-trash-alt"></i> Limpiar conversación
+                    </button>
                 </div>
                 <div class="setting-group">
-                    <button class="btn-primary" id="clearChat">Limpiar conversación</button>
+                    <small style="color: var(--text-tertiary); font-size: 0.8rem;">
+                        <i class="fas fa-info-circle"></i> 
+                        Consejos: Habla claro y pausado para mejor reconocimiento de voz. 
+                        Usa Ctrl+K para enfocar el input, Ctrl+/ para el micrófono.
+                    </small>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Notification Container (se crea dinámicamente) -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts - Orden correcto de carga -->
     <script src="js/ui.js"></script>
     <script src="js/speech.js"></script>
+    <script src="js/voice-config.js"></script>
     <script src="js/app.js"></script>
+
+    <!-- Script para detectar soporte de características -->
+    <script>
+        // Detectar soporte de características del navegador
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar soporte de reconocimiento de voz
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                console.warn('Speech recognition not supported');
+                const voiceBtn = document.getElementById('voiceBtn');
+                if (voiceBtn) {
+                    voiceBtn.style.opacity = '0.5';
+                    voiceBtn.title = 'Reconocimiento de voz no disponible en este navegador';
+                }
+            }
+
+            // Verificar soporte de síntesis de voz
+            if (!('speechSynthesis' in window)) {
+                console.warn('Speech synthesis not supported');
+                const voiceCheckbox = document.getElementById('voiceEnabled');
+                if (voiceCheckbox) {
+                    voiceCheckbox.disabled = true;
+                    voiceCheckbox.parentElement.style.opacity = '0.5';
+                }
+            }
+
+            // Verificar soporte de getUserMedia
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                console.warn('getUserMedia not supported');
+            }
+
+            // Precargar voces para síntesis
+            if ('speechSynthesis' in window) {
+                speechSynthesis.getVoices();
+                speechSynthesis.onvoiceschanged = () => {
+                    const voices = speechSynthesis.getVoices();
+                    console.log('Available voices:', voices.length);
+                };
+            }
+        });
+    </script>
 </body>
 </html>

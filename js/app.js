@@ -2,7 +2,6 @@ class AlejandrIAChat {
     constructor() {
         this.messages = [];
         this.isProcessing = false;
-        // Configuración simplificada del webhook URL
         this.webhookUrl = 'http://localhost:3001/api/alejandria';
         this.conversationContext = [];
         
@@ -25,20 +24,18 @@ class AlejandrIAChat {
         this.settingsModal = document.getElementById('settingsModal');
         this.closeSettings = document.getElementById('closeSettings');
         this.clearChatBtn = document.getElementById('clearChat');
-        this.webhookUrlInput = document.getElementById('webhookUrl');
-        
-        // Configurar input del webhook URL
-        if (this.webhookUrlInput) {
-            this.webhookUrlInput.value = this.webhookUrl;
-            // Permitir que el usuario cambie la URL si es necesario
-            this.webhookUrlInput.addEventListener('change', (e) => {
-                this.webhookUrl = e.target.value;
-                localStorage.setItem('webhookUrl', this.webhookUrl);
-            });
-        }
         
         // Theme elements
         this.themeToggle = document.getElementById('themeToggle');
+        
+        // Logo click para reload
+        const logoSection = document.querySelector('.logo-section');
+        if (logoSection) {
+            logoSection.style.cursor = 'pointer';
+            logoSection.addEventListener('click', () => {
+                location.reload();
+            });
+        }
         
         // Quick action buttons
         this.quickActionBtns = document.querySelectorAll('.quick-action-btn');
@@ -92,15 +89,6 @@ class AlejandrIAChat {
     }
 
     loadSettings() {
-        // Load webhook URL from localStorage if exists
-        const savedWebhookUrl = localStorage.getItem('webhookUrl');
-        if (savedWebhookUrl) {
-            this.webhookUrl = savedWebhookUrl;
-            if (this.webhookUrlInput) {
-                this.webhookUrlInput.value = this.webhookUrl;
-            }
-        }
-
         // Load theme preference
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
@@ -114,27 +102,51 @@ class AlejandrIAChat {
         document.body.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         this.updateThemeIcon(newTheme);
+        
+        // Add smooth transition effect
+        document.body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+        setTimeout(() => {
+            document.body.style.transition = '';
+        }, 300);
     }
 
     updateThemeIcon(theme) {
         const icon = this.themeToggle.querySelector('i');
-        icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+        if (theme === 'light') {
+            icon.className = 'fas fa-moon';
+            this.themeToggle.setAttribute('title', 'Cambiar a modo oscuro');
+        } else {
+            icon.className = 'fas fa-sun';
+            this.themeToggle.setAttribute('title', 'Cambiar a modo claro');
+        }
     }
 
     openSettings() {
         this.settingsModal.style.display = 'flex';
+        setTimeout(() => {
+            this.settingsModal.querySelector('.modal-content').style.transform = 'translateY(0) scale(1)';
+        }, 10);
     }
 
     closeSettingsModal() {
-        this.settingsModal.style.display = 'none';
+        const modalContent = this.settingsModal.querySelector('.modal-content');
+        modalContent.style.transform = 'translateY(-20px) scale(0.95)';
+        setTimeout(() => {
+            this.settingsModal.style.display = 'none';
+        }, 200);
     }
 
     clearChat() {
-        this.messages = [];
-        this.conversationContext = [];
-        this.chatMessages.innerHTML = '';
-        this.welcomeScreen.style.display = 'flex';
-        this.chatMessages.style.display = 'none';
+        const confirmed = confirm('¿Estás seguro de que quieres limpiar toda la conversación?');
+        if (confirmed) {
+            this.messages = [];
+            this.conversationContext = [];
+            this.chatMessages.innerHTML = '';
+            this.welcomeScreen.style.display = 'flex';
+            this.chatMessages.style.display = 'none';
+            
+            this.showNotification('Conversación limpiada', 'success');
+        }
     }
 
     async sendMessage(messageText = null) {
@@ -192,7 +204,9 @@ class AlejandrIAChat {
         
         const avatar = document.createElement('div');
         avatar.className = 'message-avatar';
-        avatar.textContent = message.type === 'user' ? 'U' : 'AI';
+        avatar.innerHTML = message.type === 'user' ? 
+            '<i class="fas fa-user"></i>' : 
+            '<i class="fas fa-robot"></i>';
         
         const contentWrapper = document.createElement('div');
         contentWrapper.className = 'message-wrapper';
@@ -202,6 +216,60 @@ class AlejandrIAChat {
         
         // Parse and render content with proper formatting
         content.innerHTML = this.formatMessageContent(message.content);
+        
+        // Agregar controles de voz para mensajes del asistente
+        if (message.type === 'assistant') {
+            const voiceControls = document.createElement('div');
+            voiceControls.className = 'message-voice-controls';
+            
+            const playBtn = document.createElement('button');
+            playBtn.className = 'voice-control-btn voice-play-btn';
+            playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir';
+            playBtn.addEventListener('click', () => {
+                if (window.speechHandler) {
+                    window.speechHandler.speak(message.content, messageEl);
+                }
+            });
+            
+            const pauseBtn = document.createElement('button');
+            pauseBtn.className = 'voice-control-btn voice-pause-btn';
+            pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+            pauseBtn.style.display = 'none';
+            pauseBtn.addEventListener('click', () => {
+                if (window.speechHandler) {
+                    window.speechHandler.pauseSpeaking();
+                    window.speechHandler.updateVoiceControls(messageEl, 'paused');
+                }
+            });
+            
+            const resumeBtn = document.createElement('button');
+            resumeBtn.className = 'voice-control-btn voice-resume-btn';
+            resumeBtn.innerHTML = '<i class="fas fa-play"></i> Continuar';
+            resumeBtn.style.display = 'none';
+            resumeBtn.addEventListener('click', () => {
+                if (window.speechHandler) {
+                    window.speechHandler.resumeSpeaking();
+                    window.speechHandler.updateVoiceControls(messageEl, 'playing');
+                }
+            });
+            
+            const stopBtn = document.createElement('button');
+            stopBtn.className = 'voice-control-btn voice-stop-btn';
+            stopBtn.innerHTML = '<i class="fas fa-stop"></i> Detener';
+            stopBtn.style.display = 'none';
+            stopBtn.addEventListener('click', () => {
+                if (window.speechHandler) {
+                    window.speechHandler.stopSpeaking();
+                    window.speechHandler.updateVoiceControls(messageEl, 'stopped');
+                }
+            });
+            
+            voiceControls.appendChild(playBtn);
+            voiceControls.appendChild(pauseBtn);
+            voiceControls.appendChild(resumeBtn);
+            voiceControls.appendChild(stopBtn);
+            content.appendChild(voiceControls);
+        }
         
         const time = document.createElement('div');
         time.className = 'message-time';
@@ -216,9 +284,11 @@ class AlejandrIAChat {
         this.chatMessages.appendChild(messageEl);
         this.scrollToBottom();
 
-        // Speak assistant messages if enabled
-        if (message.type === 'assistant' && window.speechHandler) {
-            window.speechHandler.speak(message.content);
+        // Auto-reproducir si está habilitado y es la primera vez
+        if (message.type === 'assistant' && window.speechHandler && window.speechHandler.voiceEnabled) {
+            setTimeout(() => {
+                window.speechHandler.speak(message.content, messageEl);
+            }, 100);
         }
     }
 
@@ -278,7 +348,6 @@ class AlejandrIAChat {
         try {
             console.log('Enviando mensaje a:', this.webhookUrl);
             
-            // Prepare the request payload
             const payload = {
                 message: userMessage,
                 context: this.conversationContext,
@@ -288,7 +357,6 @@ class AlejandrIAChat {
 
             console.log('Payload:', payload);
 
-            // Send to webhook
             const response = await fetch(this.webhookUrl, {
                 method: 'POST',
                 headers: {
@@ -308,7 +376,6 @@ class AlejandrIAChat {
             
             this.hideTypingIndicator();
             
-            // Add AI response
             if (data.response) {
                 this.addMessage('assistant', data.response);
             } else {
@@ -330,9 +397,58 @@ class AlejandrIAChat {
         }
         return sessionId;
     }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        
+        const icon = document.createElement('i');
+        switch(type) {
+            case 'success':
+                icon.className = 'fas fa-check-circle';
+                break;
+            case 'error':
+                icon.className = 'fas fa-exclamation-circle';
+                break;
+            case 'warning':
+                icon.className = 'fas fa-exclamation-triangle';
+                break;
+            default:
+                icon.className = 'fas fa-info-circle';
+        }
+        
+        notification.appendChild(icon);
+        notification.appendChild(document.createTextNode(message));
+        
+        let container = document.getElementById('notificationContainer');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'notificationContainer';
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+        
+        container.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('notification-show');
+        }, 10);
+        
+        setTimeout(() => {
+            notification.classList.remove('notification-show');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
 }
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    window.alejandria = new AlejandrIAChat();
+    if (!window.alejandria) {
+        window.alejandria = new AlejandrIAChat();
+        console.log('✅ AlejandrIAChat initialized');
+    } else {
+        console.warn('AlejandrIAChat already exists');
+    }
 });

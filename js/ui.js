@@ -146,17 +146,6 @@ class UIEnhancements {
                 button.setAttribute('aria-label', button.getAttribute('title'));
             }
         });
-
-        // Add skip link for keyboard navigation
-        const skipLink = document.createElement('a');
-        skipLink.href = '#messageInput';
-        skipLink.className = 'skip-link';
-        skipLink.textContent = 'Saltar al campo de mensaje';
-        skipLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.getElementById('messageInput').focus();
-        });
-        document.body.insertBefore(skipLink, document.body.firstChild);
     }
 
     // Utility function to format tables in messages
