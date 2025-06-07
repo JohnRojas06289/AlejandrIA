@@ -2,10 +2,8 @@ class AlejandrIAChat {
     constructor() {
         this.messages = [];
         this.isProcessing = false;
-        // Usa la variable de entorno si está disponible, si no, usa localStorage como fallback
-        this.webhookUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_WEBHOOK_URL)
-            ? import.meta.env.VITE_WEBHOOK_URL
-            : (localStorage.getItem('webhookUrl') || '');
+        // Configuración simplificada del webhook URL
+        this.webhookUrl = 'http://localhost:3001/api/alejandria';
         this.conversationContext = [];
         
         this.initializeElements();
@@ -28,11 +26,15 @@ class AlejandrIAChat {
         this.closeSettings = document.getElementById('closeSettings');
         this.clearChatBtn = document.getElementById('clearChat');
         this.webhookUrlInput = document.getElementById('webhookUrl');
-        // Si usas solo variable de entorno, puedes ocultar el input:
-        if (this.webhookUrlInput && this.webhookUrl) {
+        
+        // Configurar input del webhook URL
+        if (this.webhookUrlInput) {
             this.webhookUrlInput.value = this.webhookUrl;
-            this.webhookUrlInput.disabled = true;
-            this.webhookUrlInput.style.display = 'none';
+            // Permitir que el usuario cambie la URL si es necesario
+            this.webhookUrlInput.addEventListener('change', (e) => {
+                this.webhookUrl = e.target.value;
+                localStorage.setItem('webhookUrl', this.webhookUrl);
+            });
         }
         
         // Theme elements
@@ -77,6 +79,7 @@ class AlejandrIAChat {
         });
 
         this.clearChatBtn.addEventListener('click', () => this.clearChat());
+        
         // Theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
 
@@ -89,12 +92,13 @@ class AlejandrIAChat {
     }
 
     loadSettings() {
-        // Load webhook URL
-        // Si usas solo variable de entorno, puedes omitir la carga desde localStorage
-        if (this.webhookUrlInput && this.webhookUrl) {
-            this.webhookUrlInput.value = this.webhookUrl;
-            this.webhookUrlInput.disabled = true;
-            this.webhookUrlInput.style.display = 'none';
+        // Load webhook URL from localStorage if exists
+        const savedWebhookUrl = localStorage.getItem('webhookUrl');
+        if (savedWebhookUrl) {
+            this.webhookUrl = savedWebhookUrl;
+            if (this.webhookUrlInput) {
+                this.webhookUrlInput.value = this.webhookUrl;
+            }
         }
 
         // Load theme preference
@@ -272,12 +276,8 @@ class AlejandrIAChat {
 
     async processMessage(userMessage) {
         try {
-            if (!this.webhookUrl) {
-                this.hideTypingIndicator();
-                this.addMessage('assistant', 'Por favor, configura la URL del webhook en los ajustes para conectar con el backend.');
-                return;
-            }
-
+            console.log('Enviando mensaje a:', this.webhookUrl);
+            
             // Prepare the request payload
             const payload = {
                 message: userMessage,
@@ -285,6 +285,8 @@ class AlejandrIAChat {
                 timestamp: new Date().toISOString(),
                 sessionId: this.getSessionId()
             };
+
+            console.log('Payload:', payload);
 
             // Send to webhook
             const response = await fetch(this.webhookUrl, {
@@ -295,11 +297,14 @@ class AlejandrIAChat {
                 body: JSON.stringify(payload)
             });
 
+            console.log('Response status:', response.status);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log('Response data:', data);
             
             this.hideTypingIndicator();
             
@@ -313,7 +318,7 @@ class AlejandrIAChat {
         } catch (error) {
             console.error('Error processing message:', error);
             this.hideTypingIndicator();
-            this.addMessage('assistant', 'Lo siento, hubo un error al procesar tu mensaje. Por favor, verifica la configuración del webhook e intenta nuevamente.');
+            this.addMessage('assistant', `Lo siento, hubo un error al procesar tu mensaje: ${error.message}. Por favor, verifica que el backend esté ejecutándose correctamente.`);
         }
     }
 

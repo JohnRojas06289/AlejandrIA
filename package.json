@@ -1,0 +1,24 @@
+{
+  "name": "convergencelab-alejandria",
+  "version": "1.0.0",
+  "description": "AlejandrIA - Asistente de Investigación",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "backend": "cd backend && npm start",
+    "start:all": "concurrently \"npm run backend\" \"npm run dev\"",
+    "install:all": "npm install && cd backend && npm install"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "concurrently": "^7.6.0"
+  },
+  "keywords": [
+    "research",
+    "assistant",
+    "ai",
+    "chatbot"
+  ],
+  "author": "ConvergenceLab",
+  "license": "MIT"
+}
