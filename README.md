@@ -1,6 +1,6 @@
 # AlejandrIA - Asistente de Investigación Universitaria
 
-![AlejandrIA - Asistente de Investigación]([https://i.ibb.co/your-image-here/alejandria-preview.png](https://ibb.co/JRVrX7JM))
+![AlejandrIA - Asistente de Investigación](https://github.com/JohnRojas06289/ConvergenceLab/blob/main/assets/AlejandrIA.jpg)
 
 ## Descripción
 
@@ -136,23 +136,6 @@ El sistema utiliza n8n como backend de IA.
 - **Animaciones fluidas** con respeto a `prefers-reduced-motion`
 - **Notificaciones informativas** con feedback visual
 - **Diseño mobile-first** con cards ultra-compactas
-
-## Casos de Uso
-
-### **ConvergenceU**: Plataforma de colaboración académica
-- Conecta 500+ investigadores de 15 universidades
-- 2,000+ recomendaciones de papers generadas mensualmente
-- 85% de precisión en matches de investigadores
-
-### **ResearchNet**: Red de conocimiento interdisciplinario
-- Facilita colaboraciones entre disciplinas
-- Reduce tiempo de búsqueda de literatura en 60%
-- Aumenta productividad investigativa en 40%
-
-### **AcademicBridge**: Puente entre investigación y industria
-- Conecta academia con sector productivo
-- Identifica oportunidades de transferencia tecnológica
-- Facilita proyectos de investigación aplicada
 
 ## Contribuir
 
