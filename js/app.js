@@ -4,6 +4,7 @@ class AlejandrIAChat {
         this.isProcessing = false;
         this.webhookUrl = 'http://localhost:3001/api/alejandria';
         this.conversationContext = [];
+        this.conversationId = null; // Se generará cuando inicie una nueva conversación
         
         this.initializeElements();
         this.attachEventListeners();
@@ -141,10 +142,12 @@ class AlejandrIAChat {
         if (confirmed) {
             this.messages = [];
             this.conversationContext = [];
+            this.conversationId = null; // Reset conversation ID
             this.chatMessages.innerHTML = '';
             this.welcomeScreen.style.display = 'flex';
             this.chatMessages.style.display = 'none';
             
+            console.log('🗑️ Conversación limpiada - ID reseteado');
             this.showNotification('Conversación limpiada', 'success');
         }
     }
@@ -154,8 +157,11 @@ class AlejandrIAChat {
         
         if (!text || this.isProcessing) return;
 
-        // Hide welcome screen on first message
+        // Generar nuevo conversation ID si es el primer mensaje
         if (this.messages.length === 0) {
+            this.conversationId = this.generateNewConversationId();
+            console.log('🆕 Nueva conversación iniciada:', this.conversationId);
+            
             this.welcomeScreen.style.display = 'none';
             this.chatMessages.style.display = 'flex';
         }
@@ -348,11 +354,10 @@ class AlejandrIAChat {
         try {
             console.log('Enviando mensaje a:', this.webhookUrl);
             
+            // Prepare the request payload with conversation ID
             const payload = {
-                message: userMessage,
-                context: this.conversationContext,
-                timestamp: new Date().toISOString(),
-                sessionId: this.getSessionId()
+                conversationId: this.conversationId,
+                message: userMessage
             };
 
             console.log('Payload:', payload);
@@ -376,10 +381,14 @@ class AlejandrIAChat {
             
             this.hideTypingIndicator();
             
-            if (data.response) {
+            // Verificar el nuevo formato de respuesta con "reply"
+            if (data.reply) {
+                this.addMessage('assistant', data.reply);
+            } else if (data.response) {
+                // Mantener compatibilidad con formato anterior
                 this.addMessage('assistant', data.response);
             } else {
-                throw new Error('No response received from webhook');
+                throw new Error('No reply or response received from webhook');
             }
 
         } catch (error) {
@@ -389,13 +398,17 @@ class AlejandrIAChat {
         }
     }
 
+    generateNewConversationId() {
+        // Generar un ID único para cada conversación
+        const timestamp = Date.now();
+        const randomPart = Math.random().toString(36).substring(2, 15);
+        const conversationId = `conv-${timestamp}-${randomPart}`;
+        return conversationId;
+    }
+
     getSessionId() {
-        let sessionId = sessionStorage.getItem('alejandria-session-id');
-        if (!sessionId) {
-            sessionId = 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
-            sessionStorage.setItem('alejandria-session-id', sessionId);
-        }
-        return sessionId;
+        // Mantener para compatibilidad, pero ahora devuelve el conversation ID
+        return this.conversationId || this.generateNewConversationId();
     }
 
     showNotification(message, type = 'info') {

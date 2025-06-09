@@ -33,7 +33,7 @@ app.post('/api/alejandria', async (req, res) => {
     try {
         console.log('=== NUEVA SOLICITUD ===');
         console.log('Headers:', req.headers);
-        console.log('Body:', JSON.stringify(req.body, null, 2));
+        console.log('Body recibido:', JSON.stringify(req.body, null, 2));
         
         if (!N8N_WEBHOOK_URL) {
             console.error('N8N_WEBHOOK_URL no está configurado');
@@ -43,7 +43,25 @@ app.post('/api/alejandria', async (req, res) => {
             });
         }
 
+        // Validar el nuevo formato
+        const { conversationId, message } = req.body;
+        
+        if (!conversationId || !message) {
+            console.error('Formato de payload inválido');
+            return res.status(400).json({
+                error: 'Invalid payload format',
+                details: 'Required fields: conversationId, message'
+            });
+        }
+
+        // Preparar payload para n8n con el nuevo formato
+        const n8nPayload = {
+            conversationId,
+            message
+        };
+
         console.log('Enviando a n8n:', N8N_WEBHOOK_URL);
+        console.log('Payload para n8n:', JSON.stringify(n8nPayload, null, 2));
         
         const response = await fetch(N8N_WEBHOOK_URL, {
             method: 'POST',
@@ -51,7 +69,7 @@ app.post('/api/alejandria', async (req, res) => {
                 'Content-Type': 'application/json',
                 'User-Agent': 'AlejandrIA-Proxy/1.0'
             },
-            body: JSON.stringify(req.body)
+            body: JSON.stringify(n8nPayload)
         });
 
         console.log('Respuesta de n8n - Status:', response.status);
@@ -69,6 +87,15 @@ app.post('/api/alejandria', async (req, res) => {
 
         const data = await response.json();
         console.log('Datos de respuesta de n8n:', JSON.stringify(data, null, 2));
+        
+        // Verificar que la respuesta tenga el formato esperado
+        if (data.conversationId && data.reply) {
+            console.log('✅ Respuesta válida recibida de n8n');
+            console.log(`📋 Conversation ID: ${data.conversationId}`);
+            console.log(`💬 Reply: ${data.reply.substring(0, 100)}...`);
+        } else {
+            console.warn('⚠️ Formato de respuesta inesperado de n8n:', data);
+        }
         
         res.json(data);
         
