@@ -189,4 +189,4 @@ ConvergenceLab es un laboratorio de innovación académica dedicado a acelerar e
 
 ---
 
-Desarrollado con ❤️ por CIS - Unisabana  Transformando la investigación universitaria a través de la IA conversacional
+Desarrollado con ❤️ por CIS Unisabana - Transformando la investigación universitaria a través de la IA conversacional
