@@ -123,7 +123,6 @@ El sistema utiliza n8n como backend de IA.
 - **Auto-detección de habla** con barras de sonido reactivas
 - **Envío automático** después de 2 segundos de silencio
 - **Corrección automática** de errores comunes en español
-- **Interrupción inteligente** de síntesis al activar micrófono
 
 ### Síntesis de Voz
 - **Controles individuales** por mensaje (▶️ ⏸️ ▶️ ⏹️)
