@@ -88,16 +88,25 @@ app.post('/api/alejandria', async (req, res) => {
         const data = await response.json();
         console.log('Datos de respuesta de n8n:', JSON.stringify(data, null, 2));
         
+        // Adaptar si la respuesta es un array
+        let formattedData = data;
+        if (Array.isArray(data) && data.length > 0) {
+            formattedData = {
+                conversationId: data[0].conversation_id || data[0].conversationId,
+                reply: data[0].content
+            };
+        }
+
         // Verificar que la respuesta tenga el formato esperado
-        if (data.conversationId && data.reply) {
+        if (formattedData.conversationId && formattedData.reply) {
             console.log('✅ Respuesta válida recibida de n8n');
-            console.log(`📋 Conversation ID: ${data.conversationId}`);
-            console.log(`💬 Reply: ${data.reply.substring(0, 100)}...`);
+            console.log(`📋 Conversation ID: ${formattedData.conversationId}`);
+            console.log(`💬 Reply: ${formattedData.reply.substring(0, 100)}...`);
         } else {
             console.warn('⚠️ Formato de respuesta inesperado de n8n:', data);
         }
         
-        res.json(data);
+        res.json(formattedData);
         
     } catch (err) {
         console.error('Error en el proxy:', err);
