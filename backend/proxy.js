@@ -10,6 +10,13 @@ const PORT = process.env.PORT || 3001;
 const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
 const OPENAI_TTS_API_KEY = process.env.OPENAI_TTS_API_KEY;
 
+// Log para saber si se está usando la variable de entorno de OpenAI
+if (OPENAI_TTS_API_KEY) {
+    console.log('🔑 Usando variable de entorno OPENAI_TTS_API_KEY');
+} else {
+    console.warn('⚠️ No se encontró la variable de entorno OPENAI_TTS_API_KEY');
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
