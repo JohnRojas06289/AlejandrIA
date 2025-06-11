@@ -10,7 +10,7 @@ class SpeechHandler {
         this.finalTranscript = '';
         this.interimTranscript = '';
         this.silenceTimer = null;
-        this.silenceDelay = 2000; // 2 segundos de silencio antes de enviar
+        this.silenceDelay = 500;
         this.currentUtterance = null;
         this.audioContext = null;
         this.analyser = null;
@@ -452,95 +452,9 @@ class SpeechHandler {
         }
     }
 
-    speak(text, messageElement = null) {
-        if (!this.voiceEnabled || !this.synthesis) {
-            return;
-        }
-
-        // Cancel any ongoing speech
-        this.synthesis.cancel();
-
-        // Remove markdown and formatting for speech
-        const cleanText = this.cleanTextForSpeech(text);
-        
-        if (!cleanText.trim()) return;
-
-        this.currentUtterance = new SpeechSynthesisUtterance(cleanText);
-        this.currentUtterance.lang = 'es-ES';
-        this.currentUtterance.rate = this.voiceSpeed;
-        this.currentUtterance.pitch = 1.0;
-        this.currentUtterance.volume = 0.9;
-
-        // Wait for voices to load
-        const setVoice = () => {
-            const voices = this.synthesis.getVoices();
-            const spanishVoices = voices.filter(voice => 
-                voice.lang.startsWith('es') && voice.localService
-            );
-            
-            if (spanishVoices.length > 0) {
-                // Preferir voces femeninas para el asistente
-                const femaleVoice = spanishVoices.find(v => 
-                    v.name.toLowerCase().includes('female') || 
-                    v.name.toLowerCase().includes('mujer') ||
-                    v.name.toLowerCase().includes('maria') ||
-                    v.name.toLowerCase().includes('paloma')
-                );
-                this.currentUtterance.voice = femaleVoice || spanishVoices[0];
-            }
-        };
-
-        if (this.synthesis.getVoices().length > 0) {
-            setVoice();
-        } else {
-            this.synthesis.onvoiceschanged = setVoice;
-        }
-
-        // Event handlers
-        this.currentUtterance.onstart = () => {
-            console.log('🔊 Speech synthesis started');
-            this.isPaused = false;
-            if (messageElement) {
-                this.updateVoiceControls(messageElement, 'playing');
-            }
-        };
-
-        this.currentUtterance.onpause = () => {
-            console.log('⏸️ Speech synthesis paused');
-            this.isPaused = true;
-            if (messageElement) {
-                this.updateVoiceControls(messageElement, 'paused');
-            }
-        };
-
-        this.currentUtterance.onresume = () => {
-            console.log('▶️ Speech synthesis resumed');
-            this.isPaused = false;
-            if (messageElement) {
-                this.updateVoiceControls(messageElement, 'playing');
-            }
-        };
-
-        this.currentUtterance.onend = () => {
-            console.log('🔇 Speech synthesis ended');
-            this.isPaused = false;
-            if (messageElement) {
-                this.updateVoiceControls(messageElement, 'stopped');
-            }
-            this.currentUtterance = null;
-        };
-
-        this.currentUtterance.onerror = (event) => {
-            console.error('Speech synthesis error:', event);
-            this.isPaused = false;
-            if (messageElement) {
-                this.updateVoiceControls(messageElement, 'error');
-            }
-            this.currentUtterance = null;
-        };
-
-        this.synthesis.speak(this.currentUtterance);
-        return this.currentUtterance;
+    async speak(text, messageElement = null) {
+        if (!this.voiceEnabled) return;
+        await this.speakWithOpenAITTS(text);
     }
 
     pauseSpeaking() {
@@ -668,6 +582,30 @@ class SpeechHandler {
             window.Sabius.showNotification(message, type);
         } else {
             console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+    }
+
+    async speakWithOpenAITTS(text) {
+        try {
+            const response = await fetch('/api/tts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text })
+            });
+
+            if (!response.ok) {
+                throw new Error('Error en el backend TTS');
+            }
+
+            const audioBlob = await response.blob();
+            const audioUrl = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioUrl);
+            audio.play();
+        } catch (error) {
+            this.showNotification('Error al reproducir voz con OpenAI TTS', 'error');
+            console.error(error);
         }
     }
 }

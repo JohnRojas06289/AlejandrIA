@@ -8,6 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 const N8N_WEBHOOK_URL = process.env.N8N_WEBHOOK_URL;
+const OPENAI_TTS_API_KEY = process.env.OPENAI_TTS_API_KEY;
 
 // Middleware
 app.use(cors());
@@ -115,6 +116,35 @@ app.post('/api/Sabius', async (req, res) => {
             details: err.message,
             stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
         });
+    }
+});
+
+// Text-to-Speech endpoint
+app.post('/api/tts', async (req, res) => {
+    try {
+        const { text } = req.body;
+        const response = await fetch('https://api.openai.com/v1/audio/speech', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${OPENAI_TTS_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                model: 'tts-1',
+                input: text,
+                voice: 'nova',
+                response_format: 'mp3'
+            })
+        });
+
+        if (!response.ok) {
+            return res.status(500).json({ error: 'Error en la API de OpenAI TTS' });
+        }
+
+        res.set('Content-Type', 'audio/mpeg');
+        response.body.pipe(res);
+    } catch (error) {
+        res.status(500).json({ error: 'Error interno en TTS' });
     }
 });
 

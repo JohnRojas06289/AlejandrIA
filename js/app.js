@@ -423,9 +423,10 @@ class SabiusChat {
         this.typingIndicator.style.display = 'none';
         this.isProcessing = false;
     }
-
     scrollToBottom() {
+    setTimeout(() => {
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }, 50);
     }
 
     // 🔧 MEJORADO: Manejo de errores más robusto
