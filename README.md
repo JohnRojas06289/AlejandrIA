@@ -1,10 +1,10 @@
-# AlejandrIA - Asistente de Investigación Universitaria
+# Sabius - Asistente de Investigación Universitaria
 
-![AlejandrIA - Asistente de Investigación](https://github.com/JohnRojas06289/ConvergenceLab/blob/main/assets/AlejandrIA.jpg)
+![Sabius - Asistente de Investigación](https://github.com/JohnRojas06289/ConvergenceLab/blob/main/assets/AlejandrIA.jpg)
 
 ## Descripción
 
-AlejandrIA es un asistente de IA conversacional desarrollado por ConvergenceLab, diseñado específicamente para revolucionar la investigación académica a través de interacciones inteligentes en tiempo real. Utiliza tecnologías avanzadas de procesamiento de lenguaje natural y síntesis de voz para conectar investigadores, facilitar el descubrimiento de conocimiento y optimizar la colaboración académica.
+Sabius es un asistente de IA conversacional desarrollado por ConvergenceLab, diseñado específicamente para revolucionar la investigación académica a través de interacciones inteligentes en tiempo real. Utiliza tecnologías avanzadas de procesamiento de lenguaje natural y síntesis de voz para conectar investigadores, facilitar el descubrimiento de conocimiento y optimizar la colaboración académica.
 
 ## Características Principales
 
@@ -39,10 +39,10 @@ AlejandrIA es un asistente de IA conversacional desarrollado por ConvergenceLab,
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/convergencelab/alejandria.git
+git clone https://github.com/convergencelab/Sabius.git
 
 # Navegar al directorio del proyecto
-cd alejandria
+cd Sabius
 
 # Instalar dependencias del proyecto principal
 npm run install:all
@@ -67,12 +67,12 @@ PORT=3001
 
 ### Frontend (.env)
 ```env
-VITE_WEBHOOK_URL=http://localhost:3001/api/alejandria
+VITE_WEBHOOK_URL=http://localhost:3001/api/Sabius
 ```
 
 ## Uso
 
-AlejandrIA puede ser utilizado para:
+Sabius puede ser utilizado para:
 
 ### 1. **Descubrimiento de Investigadores**
    - Búsqueda por área de expertise
@@ -92,7 +92,7 @@ AlejandrIA puede ser utilizado para:
 ## Arquitectura del Sistema
 
 ```
-alejandria/
+Sabius/
 ├── css/
 │   ├── styles.css              # Estilos principales y paleta de colores
 │   ├── responsive.css          # Media queries y adaptabilidad
@@ -106,7 +106,7 @@ alejandria/
 │   ├── package.json            # Dependencias del backend
 │   └── .env                    # Variables de entorno
 ├── assets/
-│   ├── logo.svg                # Logo de AlejandrIA
+│   ├── logo.svg                # Logo de Sabius
 │   └── sounds/                 # Recursos de audio
 ├── index.html                  # Punto de entrada principal
 ├── server.js                   # Servidor frontend
@@ -155,9 +155,9 @@ El sistema utiliza n8n como backend de IA.
 Para soporte técnico o consultas sobre investigación:
 
 - **Email**: soporte@convergencelab.com
-- **GitHub Issues**: [Reportar problema](https://github.com/convergencelab/alejandria/issues)
-- **Documentación**: [Wiki del proyecto](https://github.com/convergencelab/alejandria/wiki)
-- **Portal**: www.convergencelab.com/alejandria
+- **GitHub Issues**: [Reportar problema](https://github.com/convergencelab/Sabius/issues)
+- **Documentación**: [Wiki del proyecto](https://github.com/convergencelab/Sabius/wiki)
+- **Portal**: www.convergencelab.com/Sabius
 
 ## Roadmap
 

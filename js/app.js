@@ -1,8 +1,8 @@
-class AlejandrIAChat {
+class SabiusChat {
     constructor() {
         this.messages = [];
         this.isProcessing = false;
-        this.webhookUrl = 'http://localhost:3001/api/alejandria';
+        this.webhookUrl = 'http://localhost:3001/api/Sabius';
         this.conversationContext = [];
         this.conversationId = null; // Se generará cuando inicie una nueva conversación
         
@@ -458,10 +458,10 @@ class AlejandrIAChat {
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    if (!window.alejandria) {
-        window.alejandria = new AlejandrIAChat();
-        console.log('✅ AlejandrIAChat initialized');
+    if (!window.Sabius) {
+        window.Sabius = new SabiusChat();
+        console.log('✅ SabiusChat initialized');
     } else {
-        console.warn('AlejandrIAChat already exists');
+        console.warn('SabiusChat already exists');
     }
 });

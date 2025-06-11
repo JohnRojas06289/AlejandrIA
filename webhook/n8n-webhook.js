@@ -9,7 +9,7 @@ const sessionId = webhookData.sessionId;
 const timestamp = webhookData.timestamp;
 
 // Prepare the prompt for GPT-4
-const systemPrompt = \`Eres AlejandrIA, un asistente inteligente especializado en ayudar a investigadores universitarios. 
+const systemPrompt = \`Eres Sabius, un asistente inteligente especializado en ayudar a investigadores universitarios. 
 Tu objetivo es:
 1. Ayudar a encontrar otros investigadores en áreas específicas
 2. Recomendar artículos de investigación relevantes
@@ -109,7 +109,7 @@ const workflowStructure = {
             position: [250, 300],
             parameters: {
                 httpMethod: "POST",
-                path: "/alejandria-chat",
+                path: "/Sabius-chat",
                 responseMode: "lastNode",
                 responseData: "firstEntryJson"
             }

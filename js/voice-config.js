@@ -195,13 +195,13 @@ class VoiceConfiguration {
                 this.executeCommand('¿Cómo puedes ayudarme?');
             },
             'limpiar chat': () => {
-                if (window.alejandria) {
-                    window.alejandria.clearChat();
+                if (window.Sabius) {
+                    window.Sabius.clearChat();
                 }
             },
             'configuración': () => {
-                if (window.alejandria) {
-                    window.alejandria.openSettings();
+                if (window.Sabius) {
+                    window.Sabius.openSettings();
                 }
             }
         };
@@ -213,8 +213,8 @@ class VoiceConfiguration {
         const messageInput = document.getElementById('messageInput');
         if (messageInput) {
             messageInput.value = text;
-            if (window.alejandria) {
-                window.alejandria.sendMessage(text);
+            if (window.Sabius) {
+                window.Sabius.sendMessage(text);
             }
         }
     }
@@ -388,8 +388,8 @@ VoiceConfiguration.prototype.setupAutoSuggestions = function() {
                 // Enviar automáticamente si es un comando
                 if (this.setupVoiceCommands()[suggestion]) {
                     setTimeout(() => {
-                        if (window.alejandria) {
-                            window.alejandria.sendMessage();
+                        if (window.Sabius) {
+                            window.Sabius.sendMessage();
                         }
                     }, 100);
                 }

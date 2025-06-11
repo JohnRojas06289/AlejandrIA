@@ -1,7 +1,7 @@
 {
-  "name": "convergencelab-alejandria",
+  "name": "convergencelab-Sabius",
   "version": "1.0.0",
-  "description": "AlejandrIA - Asistente de Investigación",
+  "description": "Sabius - Asistente de Investigación",
   "type": "module",
   "scripts": {
     "dev": "node server.js",

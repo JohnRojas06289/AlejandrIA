@@ -29,7 +29,7 @@ app.get('/health', (req, res) => {
 });
 
 // Main proxy endpoint
-app.post('/api/alejandria', async (req, res) => {
+app.post('/api/Sabius', async (req, res) => {
     try {
         console.log('=== NUEVA SOLICITUD ===');
         console.log('Headers:', req.headers);
@@ -67,7 +67,7 @@ app.post('/api/alejandria', async (req, res) => {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
-                'User-Agent': 'AlejandrIA-Proxy/1.0'
+                'User-Agent': 'Sabius-Proxy/1.0'
             },
             body: JSON.stringify(n8nPayload)
         });

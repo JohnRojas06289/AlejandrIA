@@ -1,4 +1,4 @@
-// AlejandrIA - Enhanced Speech Recognition and Synthesis Handler
+// Sabius - Enhanced Speech Recognition and Synthesis Handler
 
 class SpeechHandler {
     constructor() {
@@ -124,8 +124,8 @@ class SpeechHandler {
             // Auto-enviar si hay contenido
             if (this.finalTranscript.trim()) {
                 setTimeout(() => {
-                    if (window.alejandria) {
-                        window.alejandria.sendMessage();
+                    if (window.Sabius) {
+                        window.Sabius.sendMessage();
                     }
                 }, 500);
             }
@@ -245,8 +245,8 @@ class SpeechHandler {
             this.stopRecording();
             if (this.messageInput.value.trim()) {
                 setTimeout(() => {
-                    if (window.alejandria) {
-                        window.alejandria.sendMessage();
+                    if (window.Sabius) {
+                        window.Sabius.sendMessage();
                     }
                 }, 500);
             }
@@ -664,8 +664,8 @@ class SpeechHandler {
     }
 
     showNotification(message, type = 'info') {
-        if (window.alejandria && window.alejandria.showNotification) {
-            window.alejandria.showNotification(message, type);
+        if (window.Sabius && window.Sabius.showNotification) {
+            window.Sabius.showNotification(message, type);
         } else {
             console.log(`[${type.toUpperCase()}] ${message}`);
         }

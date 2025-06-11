@@ -1,4 +1,4 @@
-// AlejandrIA - UI Helper Functions and Enhancements
+// Sabius - UI Helper Functions and Enhancements
 
 class UIEnhancements {
     constructor() {
@@ -116,8 +116,8 @@ class UIEnhancements {
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
                 e.preventDefault();
                 if (confirm('¿Estás seguro de que quieres limpiar la conversación?')) {
-                    if (window.alejandria) {
-                        window.alejandria.clearChat();
+                    if (window.Sabius) {
+                        window.Sabius.clearChat();
                     }
                 }
             }
