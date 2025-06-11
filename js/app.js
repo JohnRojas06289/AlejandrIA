@@ -17,17 +17,31 @@ class SabiusChat {
         this.testConnection();
     }
 
-    // 🔧 NUEVO: Método para determinar la URL del backend usando variable de entorno
+    // 🔧 NUEVO: Método para determinar la URL del backend
     getBackendUrl() {
-        // Leer la variable de entorno VITE_WEBHOOK_URL del archivo .env
-        const envWebhookUrl = import.meta.env?.VITE_WEBHOOK_URL;
+        // Detectar si estamos en Railway o localhost
+        const isRailway = window.location.hostname.includes('railway.app');
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         
-        // Si la variable de entorno no está disponible, usar una URL por defecto
-        const backendUrl = envWebhookUrl || 'https://backend-production-6353.up.railway.app/api/Sabius';
+        let backendUrl;
         
-        console.log('🌐 Backend URL desde .env:', envWebhookUrl);
-        console.log('🌐 Backend URL final:', backendUrl);
-        console.log('🌍 Variables de entorno disponibles:', import.meta.env);
+        if (isRailway) {
+            // URL del backend en Railway 
+            backendUrl = 'https://backend-production-6353.up.railway.app/api/Sabius';
+        } else if (isLocalhost) {
+            // Desarrollo local
+            backendUrl = 'http://localhost:3001/api/Sabius';
+        } else {
+            // Fallback para otros entornos
+            backendUrl = `${window.location.protocol}//${window.location.hostname}:3001/api/Sabius`;
+        }
+        
+        console.log('🌐 Backend URL detectada:', backendUrl);
+        console.log('🌍 Entorno actual:', { 
+            hostname: window.location.hostname, 
+            isRailway, 
+            isLocalhost 
+        });
         
         return backendUrl;
     }
