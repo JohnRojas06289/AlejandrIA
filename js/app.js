@@ -2,13 +2,77 @@ class SabiusChat {
     constructor() {
         this.messages = [];
         this.isProcessing = false;
-        this.webhookUrl = 'http://localhost:3001/api/Sabius';
+        
+        // 🔧 FIX: Configuración dinámica de URL del backend
+        this.webhookUrl = this.getBackendUrl();
+        
         this.conversationContext = [];
         this.conversationId = null; // Se generará cuando inicie una nueva conversación
         
         this.initializeElements();
         this.attachEventListeners();
         this.loadSettings();
+        
+        // 🔧 NUEVO: Probar conexión al backend al inicializar
+        this.testConnection();
+    }
+
+    // 🔧 NUEVO: Método para determinar la URL del backend usando variable de entorno
+    getBackendUrl() {
+        // Leer la variable de entorno VITE_WEBHOOK_URL del archivo .env
+        const envWebhookUrl = import.meta.env?.VITE_WEBHOOK_URL;
+        
+        // Si la variable de entorno no está disponible, usar una URL por defecto
+        const backendUrl = envWebhookUrl || 'https://backend-production-6353.up.railway.app/api/Sabius';
+        
+        console.log('🌐 Backend URL desde .env:', envWebhookUrl);
+        console.log('🌐 Backend URL final:', backendUrl);
+        console.log('🌍 Variables de entorno disponibles:', import.meta.env);
+        
+        return backendUrl;
+    }
+
+    // 🔧 NUEVO: Probar conexión con el backend
+    async testConnection() {
+        try {
+            const healthUrl = this.webhookUrl.replace('/api/Sabius', '/health');
+            console.log('🔍 Probando conexión a:', healthUrl);
+            
+            const response = await fetch(healthUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                // Timeout para evitar esperas largas
+                signal: AbortSignal.timeout(10000) // 10 segundos
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('✅ Backend health check exitoso:', data);
+            
+            // Mostrar notificación de éxito si está disponible
+            if (this.showNotification) {
+                this.showNotification(`Backend conectado: ${data.status}`, 'success');
+            }
+            
+            return true;
+        } catch (error) {
+            console.error('❌ Error de conectividad con backend:', error);
+            
+            // Mostrar notificación de error
+            if (this.showNotification) {
+                this.showNotification(`Error de conexión: ${error.message}`, 'error');
+            } else {
+                // Fallback si showNotification no está disponible aún
+                console.warn('⚠️ Backend no disponible:', error.message);
+            }
+            
+            return false;
+        }
     }
 
     initializeElements() {
@@ -350,9 +414,10 @@ class SabiusChat {
         this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
     }
 
+    // 🔧 MEJORADO: Manejo de errores más robusto
     async processMessage(userMessage) {
         try {
-            console.log('Enviando mensaje a:', this.webhookUrl);
+            console.log('📤 Enviando mensaje a:', this.webhookUrl);
             
             // Prepare the request payload with conversation ID
             const payload = {
@@ -360,41 +425,77 @@ class SabiusChat {
                 message: userMessage
             };
 
-            console.log('Payload:', payload);
+            console.log('📦 Payload:', payload);
 
+            // 🔧 MEJORADO: Configuración de fetch más robusta
             const response = await fetch(this.webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    // Agregar headers adicionales para CORS
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(payload),
+                // Timeout de 30 segundos
+                signal: AbortSignal.timeout(30000)
             });
 
-            console.log('Response status:', response.status);
+            console.log('📨 Response status:', response.status);
+            console.log('📨 Response headers:', Object.fromEntries(response.headers.entries()));
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                // Intentar leer el cuerpo del error
+                let errorDetails;
+                try {
+                    errorDetails = await response.text();
+                } catch (e) {
+                    errorDetails = 'No se pudo leer el detalle del error';
+                }
+                
+                throw new Error(`HTTP ${response.status}: ${response.statusText}. Detalles: ${errorDetails}`);
             }
 
             const data = await response.json();
-            console.log('Response data:', data);
+            console.log('📨 Response data:', data);
             
             this.hideTypingIndicator();
             
-            // Verificar el nuevo formato de respuesta con "reply"
+            // Verificar el formato de respuesta
             if (data.reply) {
                 this.addMessage('assistant', data.reply);
             } else if (data.response) {
                 // Mantener compatibilidad con formato anterior
                 this.addMessage('assistant', data.response);
             } else {
-                throw new Error('No reply or response received from webhook');
+                throw new Error('No se recibió una respuesta válida del webhook. Formato esperado: {reply: "texto"} o {response: "texto"}');
             }
 
         } catch (error) {
-            console.error('Error processing message:', error);
+            console.error('❌ Error procesando mensaje:', error);
             this.hideTypingIndicator();
-            this.addMessage('assistant', `Lo siento, hubo un error al procesar tu mensaje: ${error.message}. Por favor, verifica que el backend esté ejecutándose correctamente.`);
+            
+            // 🔧 MEJORADO: Mensajes de error más específicos
+            let errorMessage = 'Lo siento, hubo un error al procesar tu mensaje. ';
+            
+            if (error.name === 'AbortError') {
+                errorMessage += 'La solicitud tomó demasiado tiempo. Intenta de nuevo.';
+            } else if (error.message.includes('Failed to fetch')) {
+                errorMessage += 'No se pudo conectar con el servidor. Verifica tu conexión a internet y que el backend esté funcionando.';
+            } else if (error.message.includes('CORS')) {
+                errorMessage += 'Error de configuración CORS. Contacta al administrador.';
+            } else {
+                errorMessage += error.message;
+            }
+            
+            this.addMessage('assistant', errorMessage);
+            
+            // 🔧 NUEVO: Sugerir verificar la conexión
+            if (error.message.includes('Failed to fetch')) {
+                setTimeout(() => {
+                    this.testConnection();
+                }, 2000);
+            }
         }
     }
 
