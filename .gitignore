@@ -3,3 +3,6 @@
 
 .env
 /backend/.env
+
+venv/
+/backend/venv
